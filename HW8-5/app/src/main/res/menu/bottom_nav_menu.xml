@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_reco_weather"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_reco_weather"
+        android:title="Recents"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_weather_results"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_weather_results"
+        android:title="Favorites"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_weather_map"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_weather_map"
+        android:title="Nearby"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_weather_history"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_history"
+        android:title="Nearby"
+        app:showAsAction="ifRoom" />
+</menu>
