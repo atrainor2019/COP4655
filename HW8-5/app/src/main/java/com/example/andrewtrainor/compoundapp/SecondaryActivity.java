@@ -250,6 +250,4 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
         startActivity(i);
     }
 
-
-
 }

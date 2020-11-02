@@ -16,7 +16,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDW2aai-YDXzvsN6kevZVqg-DTCDl2C-vw" />
+            android:value="AIzaSyDMlCG0y9_ozli36pzr-P2RxqS9SxCqB98" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -32,6 +32,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".TextToSpeechActivity" >
+            <!--Default Intent Filter-->
+            <intent-filter>
+                <action android:name="android.intent.action.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MapActivity" >
             <!--Default Intent Filter-->
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
