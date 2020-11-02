@@ -82,12 +82,14 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                         return true;
 
                     case R.id.action_weather_map:
-                        selectedFragment = new MapFragment();
-                        break;
+                        startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
 
                     case R.id.action_weather_history:
-                        selectedFragment = new HistoryFragment();
-                        break;
+                        startActivity(new Intent(getApplicationContext(), ListViewActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
@@ -247,5 +249,7 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
         //move to the next activity
         startActivity(i);
     }
+
+
 
 }
