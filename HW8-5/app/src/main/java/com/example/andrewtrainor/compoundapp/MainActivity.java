@@ -2,6 +2,7 @@ package com.example.andrewtrainor.compoundapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,18 +21,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_reco_weather:
+                        selectedFragment = new HomeFragment();
+                        break;
 
                     case R.id.action_weather_results:
+                        selectedFragment = new WeatherFragment();
+                        break;
 
                     case R.id.action_weather_map:
+                        selectedFragment = new MapFragment();
+                        break;
 
                     case R.id.action_weather_history:
+                        selectedFragment = new HistoryFragment();
+                        break;
                 }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
                 return true;
             }
         });
