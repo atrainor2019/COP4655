@@ -2,10 +2,12 @@ package com.example.andrewtrainor.compoundapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +36,7 @@ import java.util.Locale;
 
 import static com.example.andrewtrainor.compoundapp.SecondaryActivity.USER_INPUT2;
 
-public class TextToSpeechActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class TextToSpeechActivity extends AppCompatActivity implements OnMapReadyCallback{
     //initialize variables to assign by element ID and display data
     String API_KEY = "4eba6e69b643edd0fca09316822bd45e";
 
@@ -49,6 +51,8 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
     TextView temperature, temphigh, templow, humidity, city, sunrise, sunset, latitude, longitude, pressure, windspeed;
     int templowF, temphighF, temp;
     double lat, lon;
+    String toSpeak;
+    TextToSpeech textToSpeech;
 
 
 
@@ -57,6 +61,15 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tts);
+
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() { // initialize TextToSpeach instance
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.UK);
+                }
+            }
+        });
 
         //get the intent
         Intent intent = getIntent();
@@ -98,6 +111,7 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
                 return true;
             }
         });
+
 
         //initialize elements by ID
         humidity = findViewById(R.id.humidity);
@@ -186,6 +200,11 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
 
                             windspeed.setText(response.getJSONObject("wind").getInt("speed") + " mph");
 
+                            toSpeak = "The weather in " + city.getText() + " is";
+                            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+
+                            textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
                             //call the newLocation() method to update the map according to the coordinates for the input
                             newLocation();
 
@@ -225,5 +244,12 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 11)); // move camera and change zoom, all other properties remain the same
 
         }
+    }
+
+    public void onPause() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+        super.onPause(); // call parent method
     }
 }
