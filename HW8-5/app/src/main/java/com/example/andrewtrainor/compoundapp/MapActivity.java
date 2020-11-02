@@ -111,6 +111,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //parse the JSON data according to the user input
         jsonParse(userinput);
 
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

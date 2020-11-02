@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.action_reco_weather);
 
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -107,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    //speech to text implementation
 
     public void speechToText(View v) {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

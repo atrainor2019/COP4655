@@ -200,7 +200,9 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
 
                             windspeed.setText(response.getJSONObject("wind").getInt("speed") + " mph");
 
-                            toSpeak = "The weather in " + city.getText() + " is";
+                            toSpeak = "The temperature in " + city.getText() + " is " + temperature.getText() + " the high today is " + temphigh.getText()
+                            + ". Sunrise today is at " + sunrise.getText() + ". Sunset will be tonight at " + sunset.getText() + " expect a low temperature of " + templow.getText();
+
                             Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
 
                             textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
