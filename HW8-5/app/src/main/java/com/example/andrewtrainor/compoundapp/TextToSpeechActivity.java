@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,8 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCallback {
-    public static final String USER_INPUT2 = "";
+import static com.example.andrewtrainor.compoundapp.SecondaryActivity.USER_INPUT2;
+
+public class TextToSpeechActivity extends AppCompatActivity implements OnMapReadyCallback {
     //initialize variables to assign by element ID and display data
     String API_KEY = "4eba6e69b643edd0fca09316822bd45e";
 
@@ -56,15 +56,17 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_secondary);
+        setContentView(R.layout.activity_tts);
 
         //get the intent
         Intent intent = getIntent();
 
         //get the user input from the previous activity
-        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+        String userinput = intent.getStringExtra(USER_INPUT2);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setSelectedItemId(R.id.action_weather_results);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -77,7 +79,7 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                         return true;
 
                     case R.id.action_weather_results:
-                        sendWeatherInfotoTTS(this);
+                        startActivity(new Intent(getApplicationContext(), TextToSpeechActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
@@ -94,7 +96,6 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                 return true;
             }
         });
-
 
         //initialize elements by ID
         humidity = findViewById(R.id.humidity);
@@ -120,17 +121,6 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //grab the go back button using ID
-        goBackbutton = (Button) findViewById(R.id.newsearch);
-
-        //set onclick listener for the button to return the the previous page to search again
-        goBackbutton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //finish the activity and return to previous
-                finish();
-            }
-        });
     }
 
     //check whether the user has input a City, a Zipcode, or a GPS string structured as (lat,lon)
@@ -234,18 +224,4 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
 
         }
     }
-
-    public void sendWeatherInfotoTTS(BottomNavigationView.OnNavigationItemSelectedListener view){
-        Intent intent = getIntent();
-
-        //get the user input from the previous activity
-        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
-
-        Intent i = new Intent(this, TextToSpeechActivity.class);
-        i.putExtra(USER_INPUT2, userinput);
-
-        //move to the next activity
-        startActivity(i);
-    }
-
 }

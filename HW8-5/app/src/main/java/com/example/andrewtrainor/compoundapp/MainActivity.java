@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
+        bottomNavigationView.setSelectedItemId(R.id.action_reco_weather);
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_reco_weather:
-                        selectedFragment = new HomeFragment();
-                        break;
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
 
                     case R.id.action_weather_results:
-                        selectedFragment = new WeatherFragment();
-                        break;
+                        sendWeatherInfo2(this);
+                        overridePendingTransition(0,0);
+                        return true;
 
                     case R.id.action_weather_map:
                         selectedFragment = new MapFragment();
@@ -56,6 +58,20 @@ public class MainActivity extends AppCompatActivity {
     //called when the user taps the search button and sends the info to the second activity
     public void sendWeatherInfo(View view){
         Intent intent = new Intent(this, SecondaryActivity.class);
+        EditText editText = (EditText) findViewById(R.id.weatherInput);
+
+        //get the userinput
+        String userInput = editText.getText().toString();
+
+        //pass the userinput data to the next activity
+        intent.putExtra(USER_INPUT, userInput);
+
+        //move to the next activity
+        startActivity(intent);
+    }
+
+    public void sendWeatherInfo2(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = new Intent(this, TextToSpeechActivity.class);
         EditText editText = (EditText) findViewById(R.id.weatherInput);
 
         //get the userinput
