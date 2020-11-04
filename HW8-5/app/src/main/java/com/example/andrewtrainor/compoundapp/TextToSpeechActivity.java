@@ -87,17 +87,17 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_reco_weather:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        sendWeatherInfotoHome(this);
                         overridePendingTransition(0,0);
                         return true;
 
                     case R.id.action_weather_results:
-                        startActivity(new Intent(getApplicationContext(), TextToSpeechActivity.class));
+                        sendWeatherInfotoTTS(this);;
                         overridePendingTransition(0,0);
                         return true;
 
                     case R.id.action_weather_map:
-                        startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                        sendWeatherInfotoMap(this);;
                         overridePendingTransition(0,0);
                         return true;
 
@@ -253,5 +253,44 @@ public class TextToSpeechActivity extends AppCompatActivity implements OnMapRead
             textToSpeech.stop();
         }
         super.onPause(); // call parent method
+    }
+
+    public void sendWeatherInfotoTTS(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, TextToSpeechActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoMap(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, MapActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoHome(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
     }
 }

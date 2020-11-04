@@ -55,7 +55,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     double lat, lon;
 
 
-
     //create the activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_reco_weather:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        sendWeatherInfotoHome(this);
                         overridePendingTransition(0,0);
                         return true;
 
@@ -89,7 +88,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         return true;
 
                     case R.id.action_weather_map:
-                        startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                        sendWeatherInfotoMap(this);
                         overridePendingTransition(0,0);
                         return true;
 
@@ -104,6 +103,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         //setup new request queue using volley
         mQueue = Volley.newRequestQueue(this);
@@ -112,11 +115,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         jsonParse(userinput);
 
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    }
 
+    //set map on ready
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        TileProvider tileProvider = new UrlTileProvider(256, 256) {        @Override
+        public URL getTileUrl(int x, int y, int zoom) {            /* Define the URL pattern for the tile images */
+            String s = String.format("https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=4eba6e69b643edd0fca09316822bd45e", zoom, x, y);
+            if (!checkTileExists(x, y, zoom)) {
+                return null;
+            }            try {
+                return new URL(s);
+            } catch (MalformedURLException e) {
+                throw new AssertionError(e);
+            }
+        }        /*
+         * Check that the tile server supports the requested x, y and zoom.
+         * Complete this stub according to the tile range you support.
+         * If you support a limited range of tiles at different zoom levels, then you
+         * need to define the supported x, y range at each zoom level.
+         */
+            private boolean checkTileExists(int x, int y, int zoom) {
+                int minZoom = 12;
+                int maxZoom = 16;            return (zoom >= minZoom && zoom <= maxZoom);
+            }
+        };
+        Double lat = 28.5383;
+        Double lon = -81.3792;
+        LatLng loc = new LatLng(lat,lon);
+        googleMap.addMarker(new MarkerOptions().position(loc).title("You are here!"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+        TileOverlay tileOverlay = googleMap.addTileOverlay(new TileOverlayOptions()
+                .tileProvider(tileProvider));
     }
 
     //check whether the user has input a City, a Zipcode, or a GPS string structured as (lat,lon)
@@ -162,7 +195,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             lat = response.getJSONObject("coord").getDouble("lat");
                             lon = response.getJSONObject("coord").getDouble("lon");
 
-                            newLocation();
+
+                            newLocation(mMap);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -180,47 +214,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mQueue.add(request);
     }
 
-    //set map on ready
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        TileProvider tileProvider = new UrlTileProvider(256, 256) {        @Override
-        public URL getTileUrl(int x, int y, int zoom) {            /* Define the URL pattern for the tile images */
-            String s = String.format("https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=4eba6e69b643edd0fca09316822bd45e", zoom, x, y);
-            if (!checkTileExists(x, y, zoom)) {
-                return null;
-            }            try {
-                return new URL(s);
-            } catch (MalformedURLException e) {
-                throw new AssertionError(e);
-            }
-        }        /*
-         * Check that the tile server supports the requested x, y and zoom.
-         * Complete this stub according to the tile range you support.
-         * If you support a limited range of tiles at different zoom levels, then you
-         * need to define the supported x, y range at each zoom level.
-         */
-            private boolean checkTileExists(int x, int y, int zoom) {
-                int minZoom = 12;
-                int maxZoom = 16;            return (zoom >= minZoom && zoom <= maxZoom);
-            }
-        };
-        Double lat = 28.5383;
-        Double lon = -81.3792;
-        LatLng loc = new LatLng(lat,lon);
-        googleMap.addMarker(new MarkerOptions().position(loc).title("You are here!"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        googleMap.moveCamera(CameraUpdateFactory.zoomTo(12));
-        TileOverlay tileOverlay = googleMap.addTileOverlay(new TileOverlayOptions()
-                .tileProvider(tileProvider));
-    }
 
     //update the location of the map
-    void newLocation() {
-        if (mMap != null) {
-            LatLng pos = new LatLng(lat, lon); //get new position
-            mMap.addMarker(new
-                    MarkerOptions().position(pos).title("Andrew Trainor Weather App"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 11)); // move camera and change zoom, all other properties remain the same
+    void newLocation(GoogleMap googleMap) {
+        if (googleMap != null) {
+
+            TileProvider tileProvider = new UrlTileProvider(256, 256) {        @Override
+            public URL getTileUrl(int x, int y, int zoom) {            /* Define the URL pattern for the tile images */
+                String s = String.format("https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=4eba6e69b643edd0fca09316822bd45e", zoom, x, y);
+                if (!checkTileExists(x, y, zoom)) {
+                    return null;
+                }            try {
+                    return new URL(s);
+                } catch (MalformedURLException e) {
+                    throw new AssertionError(e);
+                }
+            }        /*
+             * Check that the tile server supports the requested x, y and zoom.
+             * Complete this stub according to the tile range you support.
+             * If you support a limited range of tiles at different zoom levels, then you
+             * need to define the supported x, y range at each zoom level.
+             */
+                private boolean checkTileExists(int x, int y, int zoom) {
+                    int minZoom = 12;
+                    int maxZoom = 16;            return (zoom >= minZoom && zoom <= maxZoom);
+                }
+            };
+
+            LatLng loc = new LatLng(lat,lon);
+            googleMap.addMarker(new MarkerOptions().position(loc).title("You are here!"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+            TileOverlay tileOverlay = googleMap.addTileOverlay(new TileOverlayOptions()
+                    .tileProvider(tileProvider));
 
         }
     }
@@ -238,4 +264,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         startActivity(i);
     }
 
+    public void sendWeatherInfotoMap(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, MapActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoHome(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
 }

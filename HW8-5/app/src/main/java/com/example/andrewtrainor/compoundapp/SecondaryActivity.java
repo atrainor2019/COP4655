@@ -72,7 +72,7 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_reco_weather:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        sendWeatherInfotoHome(this);
                         overridePendingTransition(0,0);
                         return true;
 
@@ -133,6 +133,17 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                 finish();
             }
         });
+    }
+
+    //set map on ready
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        LatLng pos = new LatLng(lat, lon);
+
+        mMap.addMarker(new
+                MarkerOptions().position(pos).title("Florida Atlantic University"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
 
     //check whether the user has input a City, a Zipcode, or a GPS string structured as (lat,lon)
@@ -215,16 +226,6 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
         mQueue.add(request);
     }
 
-    //set map on ready
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        LatLng pos = new LatLng(lat, lon);
-
-        mMap.addMarker(new
-                MarkerOptions().position(pos).title("Florida Atlantic University"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-    }
 
     //update the location of the map
     void newLocation() {
@@ -257,6 +258,19 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
         String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
 
         Intent i = new Intent(this, MapActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoHome(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, MainActivity.class);
         i.putExtra(USER_INPUT2, userinput);
 
         //move to the next activity
