@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -87,7 +89,7 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
                         return true;
 
                     case R.id.action_weather_history:
-                        startActivity(new Intent(getApplicationContext(), ListViewActivity.class));
+                        sendWeatherInfotoHistory(this);
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -271,6 +273,19 @@ public class SecondaryActivity extends AppCompatActivity implements OnMapReadyCa
         String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
 
         Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoHistory(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, ListViewActivity.class);
         i.putExtra(USER_INPUT2, userinput);
 
         //move to the next activity

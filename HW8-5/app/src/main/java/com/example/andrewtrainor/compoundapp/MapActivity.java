@@ -93,7 +93,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         return true;
 
                     case R.id.action_weather_history:
-                        startActivity(new Intent(getApplicationContext(), ListViewActivity.class));
+                        sendWeatherInfotoHistory(this);
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -284,6 +284,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
 
         Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(USER_INPUT2, userinput);
+
+        //move to the next activity
+        startActivity(i);
+    }
+
+    public void sendWeatherInfotoHistory(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = getIntent();
+
+        //get the user input from the previous activity
+        String userinput = intent.getStringExtra(MainActivity.USER_INPUT);
+
+        Intent i = new Intent(this, ListViewActivity.class);
         i.putExtra(USER_INPUT2, userinput);
 
         //move to the next activity

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.action_weather_history:
-                        startActivity(new Intent(getApplicationContext(), ListViewActivity.class));
+                        sendWeatherInfo4(this);
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -94,6 +94,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendWeatherInfo3(BottomNavigationView.OnNavigationItemSelectedListener view){
         Intent intent = new Intent(this, MapActivity.class);
+        EditText editText = (EditText) findViewById(R.id.weatherInput);
+
+        //get the userinput
+        String userInput = editText.getText().toString();
+
+        //pass the userinput data to the next activity
+        intent.putExtra(USER_INPUT, userInput);
+
+        //move to the next activity
+        startActivity(intent);
+    }
+
+    public void sendWeatherInfo4(BottomNavigationView.OnNavigationItemSelectedListener view){
+        Intent intent = new Intent(this, ListViewActivity.class);
         EditText editText = (EditText) findViewById(R.id.weatherInput);
 
         //get the userinput

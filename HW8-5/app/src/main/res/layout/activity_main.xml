@@ -57,7 +57,16 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"/>
+        android:layout_above="@id/bottom_navigation">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="192dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|center"
+            android:textColor="#FFF"
+            android:text="Andrew Trainor - Z23542070" />
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
